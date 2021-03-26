@@ -1,0 +1,302 @@
+---
+title: "Tugas Praktikum APG Pertemuan 1 "
+author: 'Oleh : Fayadh Abiyyi'
+output:
+  html_document:
+    code_folding: show
+    highlight: zenburn
+    theme: united
+    toc: yes
+    toc_float: yes
+always_allow_html: yes
+---
+
+```{css, echo=FALSE}
+p {
+  font-size: 15px; font-family: "Ubuntu",Tahoma,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+```
+
+```{css, echo=FALSE} 
+pre { # Set panjang dan tinggi code blocks
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 300px;
+}
+```
+
+```{css, echo=FALSE}
+.scroll-100 {
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(equatiomatic)
+library(tinytex)
+library(klippy)
+```
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'),color='white',tooltip_message = 'Klik untuk menyalin kode', tooltip_success = 'Berhasil disalin')
+```
+
+# Modul 1
+
+## 1.1 Deskripsi Singkat   
+Penyelidikan ilmiah merupakan proses belajar berulang yang bertujuan untuk memperoleh  penjelasan atas suatu fenomena melalui eksperimen atau observasi.   Selama proses  pembelajaran berulang ini, variabel sering ditambahkan atau dihapus dari pembelajaran.   
+Dengan demikian, kompleksitas sebagian besar fenomena memerlukan peneliti untuk  mengumpulkan pengamatan pada banyak variabel berbeda, sehingga untuk itulah kita butuh  analisis peubah ganda.   
+Dalam melakukan analisis peubah ganda kita harus memahami aspek-aspek di dalam analisis  peubah ganda terlebih dahulu.  
+
+## 1.2 Tujuan Praktikum 
+Tujuan pembelajaran pada modul 1 ini adalah memberikan pengetahuan tentang aspek aspek dalam analisis peubah ganda dan mampu melakukan analisis deksriptif dan visualisasi pada data  multivariat.  
+
+## 1.3 Material Praktikum   
+Pada kegiatan modul 1 diperlukan beberapa material berupa software, yaitu:   
+1) Software R (direkomendasikan versi terbaru).   
+2) Software R Studio.   
+
+## 1.4 Kegiatan Praktikum  
+Cobalah Sintaksis R berikut:  
+*Notes : "Gunakan tombol kecil di pojok kanan atas jendela kode untuk menyalin semua sintaks."*  
+
+```{r Soal, echo=TRUE, eval=FALSE,class.output= 'scroll-100'}
+#DATA ORGANIZATION 
+ attach(mtcars) 
+ #save as matrice 
+ dat1 <- as.matrix(mtcars) 
+ nrow(dat1) 
+ ncol(dat1) 
+ dim(dat1) 
+ 
+ #save as dataframe 
+ dat2 <- as.data.frame(mtcars) 
+ str(dat2) 
+ colfac <- c("vs","am","gear","carb") 
+ dat2[colfac] <- lapply(dat2[colfac], factor) 
+ str(dat2) 
+  
+#STATISTIK DESKRIPTIF 
+ summary(dat2) 
+  
+ colnum <- c("mpg","cyl","disp","hp","drat","wt","qsec") 
+ dat3 <- dat2[colnum] 
+  
+ apply(dat3,2,mean) 
+ apply(dat3,2,var) 
+ apply(dat3,2,sd) 
+ apply(dat3,2,min) 
+ apply(dat3,2,max) 
+  
+ matkov <- cov(dat3) 
+ matkov 
+  
+##VISUALISASI DATA MULTIVARIAT 
+#Scatterplot 
+ head(mtcars) 
+ plot(wt,mpg) 
+#matrix scatterplot 
+ plot(mtcars[,c(1,3,4,6)]) 
+  
+#Scatterplot using ggplot 
+ plot1 <- ggplot(mtcars, aes(x=wt, y=mpg)) +  geom_point() + 
+ theme(legend.position="none") 
+ plot1 
+  
+#Matrix scatterplot using ggplot 
+ library(GGally) 
+ plot2 <- ggpairs(mtcars[,c(1,3,4,6)]) 
+ plot2 
+#Scatterplot dengan marginal 
+# library 
+library(ggplot2) 
+library(ggExtra) 
+# The mtcars dataset is proposed in R 
+head(mtcars)
+# classic plot : 
+p <- ggplot(mtcars, aes(x=wt, y=mpg, color=cyl)) +  geom_point() + 
+ theme(legend.position="none") 
+p 
+# with marginal histogram 
+p1 <- ggMarginal(p, type="histogram") 
+p1 
+# marginal density 
+p2 <- ggMarginal(p, type="density") 
+p2 
+# marginal boxplot 
+p3 <- ggMarginal(p, type="boxplot") 
+p3 
+#Trivariate scatterplot 
+#install.packages("scatterplot3d") 
+library(scatterplot3d) 
+scatterplot3d(wt,disp,mpg, main="3D Scatterplot",   color = "red") 
+scatterplot3d(wt,disp,mpg, main="3D Scatterplot",   highlight.3d = TRUE) 
+dat <- data.frame(wt,disp,mpg) 
+plot(dat) 
+#install.packages("corrplot") 
+library(corrplot) 
+# We use Motor Trend Data # 
+# Correlation Plot # 
+M <- cor(mtcars) 
+head(M) 
+corrplot(M, method = "circle") 
+corrplot(M, method = "ellipse") 
+corrplot(M, type = "upper") 
+#Scatterplot 3d interactive 
+library(shiny) 
+library(crosstalk) 
+library(rgl) 
+library(plot3D) 
+library(plot3Drgl)
+scatter3Drgl(wt,disp,mpg) 
+#stars 
+## 'Spider' or 'Radar' plot: 
+stars(mtcars[1:6, 1:7], locations = c(0, 0), radius = FALSE, 
+ key.loc = c(0, 0), main = "Motor Trend Cars", lty = 1,  
+ col.lines = rainbow(6)) 
+#chernoff faces 
+#install.packages("aplpack") 
+library(aplpack) 
+faces() 
+faces(face.type=1) 
+faces(rbind(1:3,5:3,3:5,5:7)) 
+data(longley) 
+faces(longley[1:9,],face.type=0) 
+faces(longley[1:9,],face.type=1) 
+faces(mtcars[1:20,1:7]) 
+```
+
+## 1.5 Hasil Praktikum  
+
+* Install paket _packages_ atau _library_  yang dibutuhkan dengan cara :  
+```{r,results='hide',eval=FALSE}
+paket <- c("ggplot2","GGally","ggExtra","scatterplot3d","corrplot",
+           "shiny","crosstalk","rgl","plot3D","plot3Drgl","aplpack","gridExtra")
+install.packages(paket) # Install packages
+```
+
+* Load _library_  yang dibutuhkan  
+
+```{r,results='hide',warning= FALSE,message=FALSE}
+paket <- c("ggplot2","GGally","ggExtra","scatterplot3d","corrplot",
+           "shiny","crosstalk","rgl","plot3D","plot3Drgl","aplpack","gridExtra")
+lapply(paket,require,character.only=TRUE) # Load library
+```
+
+
+* Coba jalankan semua sintaksnya :  
+_**( Penulis melakukan sedikit perubahan dan penyesuaian dari sintaks awal yang ada di soal. Hal ini dilakukan karena pada sintaks di soal terdapat beberapa error saat dijalankan )**_  
+```{r}
+#DATA ORGANIZATION 
+ attach(mtcars) 
+ #save as matrice 
+ dat1 <- as.matrix(mtcars) 
+ nrow(dat1) 
+ ncol(dat1) 
+ dim(dat1) 
+ 
+ #save as dataframe 
+ dat2 <- as.data.frame(mtcars) 
+ str(dat2) 
+ colfac <- c("vs","am","gear","carb") 
+ dat2[colfac] <- lapply(dat2[colfac], factor) 
+ str(dat2) 
+  
+#STATISTIK DESKRIPTIF 
+ summary(dat2) 
+  
+ colnum <- c("mpg","cyl","disp","hp","drat","wt","qsec") 
+ dat3 <- dat2[colnum] 
+  
+ apply(dat3,2,mean) 
+ apply(dat3,2,var) 
+ apply(dat3,2,sd) 
+ apply(dat3,2,min) 
+ apply(dat3,2,max) 
+  
+ matkov <- cov(dat3) 
+ matkov 
+  
+##VISUALISASI DATA MULTIVARIAT 
+#Scatterplot 
+ head(mtcars) 
+ plot(wt,mpg) 
+#matrix scatterplot 
+ plot(mtcars[,c(1,3,4,6)]) 
+  
+#Scatterplot using ggplot 
+ plot1 <- ggplot(mtcars, aes(x=wt, y=mpg)) +  geom_point() + 
+ theme(legend.position="none") 
+ plot1 
+  
+#Matrix scatterplot using ggplot 
+ library(GGally) 
+ plot2 <- ggpairs(mtcars[,c(1,3,4,6)]) 
+ plot2 
+#Scatterplot dengan marginal 
+# library 
+library(ggplot2) 
+library(ggExtra) 
+# The mtcars dataset is proposed in R 
+head(mtcars)
+```
+
+```{r,fig.keep='last'}
+# classic plot : 
+p <- ggplot(mtcars, aes(x=wt, y=mpg, color=cyl)) +  geom_point() + 
+ theme(legend.position="none") + ggtitle("Classic Plot")
+pclassic <- p
+# with marginal histogram
+p <- p + ggtitle("with marginal histogram")
+p1 <- ggMarginal(p, type="histogram")
+# marginal density
+p <- p + ggtitle("with marginal density")
+p2 <- ggMarginal(p, type="density") 
+# marginal boxplot
+p <- p + ggtitle("with marginal boxplot")
+p3 <- ggMarginal(p, type="boxplot") 
+grid.arrange(pclassic,p1,p2,p3,ncol=2)
+```
+```{r}
+#Trivariate scatterplot 
+library(scatterplot3d) 
+scatterplot3d(wt,disp,mpg, main="3D Scatterplot",   color = "red") 
+scatterplot3d(wt,disp,mpg, main="3D Scatterplot",   highlight.3d = TRUE) 
+dat <- data.frame(wt,disp,mpg) 
+plot(dat) 
+#install.packages("corrplot") 
+library(corrplot) 
+# We use Motor Trend Data # 
+# Correlation Plot # 
+M <- cor(mtcars) 
+head(M) 
+corrplot(M, method = "circle") 
+corrplot(M, method = "ellipse") 
+corrplot(M, type = "upper") 
+#Scatterplot 3d interactive 
+library(shiny) 
+library(crosstalk) 
+library(rgl) 
+library(plot3D) 
+library(plot3Drgl)
+scatter3Drgl(wt,disp,mpg) 
+#stars 
+## 'Spider' or 'Radar' plot: 
+stars(mtcars[1:6, 1:7], locations = c(0, 0), radius = FALSE, 
+ key.loc = c(0, 0), main = "Motor Trend Cars", lty = 1,  
+ col.lines = rainbow(6))
+#chernoff faces 
+library(aplpack) 
+faces() 
+faces(face.type=1) 
+faces(rbind(1:3,5:3,3:5,5:7)) 
+data(longley) 
+faces(longley[1:9,],face.type=0) 
+faces(longley[1:9,],face.type=1) 
+faces(mtcars[1:20,1:7]) 
+```
